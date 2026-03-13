@@ -19,7 +19,7 @@ The tool can be opened by pressing `F11` ingame and currently includes the follo
 - Extract the BepInEx 5 zip file into the game folder. This means, the files and folders like `winhttp.dll` and `BepInEx` should be next to `Verho.exe`.
 - Launch the game once. Close it again once you get to the main menu.
 - Go into the `BepInEx > config` folder in your game folder and open `BepInEx.cfg`. In there, look for `HideManagerGameObject` and change it from `false` to `true`.
-- Download the latest release DLL and put it into `BepInEx > plugins` in your game folder.
+- Download the latest [release DLL](https://github.com/Vinjul1704/verho-tool/releases) and put it into `BepInEx > plugins` in your game folder.
 - [OPTIONAL] Additionally, I'd highly recommend installing RuntimeUnityEditor as well, which gives you a very powerful ingame-editor and is extremely useful for testing (make sure you pick `RuntimeUnityEditor.Bepin5...`): https://github.com/ManlyMarco/RuntimeUnityEditor/releases
 
 ## Compiling
