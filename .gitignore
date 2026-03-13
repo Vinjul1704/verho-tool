@@ -52,6 +52,3 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
-
-# Importat lib DLL binaries
-lib/*.dll
