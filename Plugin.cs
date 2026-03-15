@@ -36,7 +36,7 @@ public class VerhoTool : BaseUnityPlugin
 
     private GUISkin guiSkin = new GUISkin();
 
-    private Rect windowRectMainDefault = new Rect(50, 50, 480, 200);
+    private Rect windowRectMainDefault = new Rect(50, 50, 480, 215);
     private Rect windowRectItemSpawnerDefault = new Rect(50, 50, 300, 400);
     private Rect windowRectBonfiresDefault = new Rect(50, 50, 200, 400);
     private Rect windowRectMaprenderDefault = new Rect(50, 50, 210, 155);
@@ -75,6 +75,8 @@ public class VerhoTool : BaseUnityPlugin
     private Vector3 maprenderPosition = Vector3.zero;
     private float maprenderSize = 100.0f;
     private int maprenderResolution = 1024;
+
+    private bool wrongwarpPositionsEnabled = false;
 
 
     private void Awake()
@@ -254,6 +256,50 @@ public class VerhoTool : BaseUnityPlugin
                 windowRectMaprender = GUI.Window(10003, windowRectMaprender, WindowMaprender, "Map Renderer");
             }
         }
+
+        if (wrongwarpPositionsEnabled == true)
+        {
+            // Get some components
+            GameObject player = GetPlayer();
+            if (player == null)
+            {
+                return;
+            }
+
+            FpsController fpsController = player.GetComponent<FpsController>();
+            if (fpsController == null)
+            {
+                return;
+            }
+
+            WorldSaveMenager worldsave = Traverse.Create(fpsController).Field("worldSave").GetValue() as WorldSaveMenager;
+            if (worldsave == null)
+            {
+                return;
+            }
+
+            
+            // Render all bonfire warp locations
+            int bonfireCount = worldsave.world_bonfirePositions.Count;
+            Camera mainCamera = Camera.main;
+            for (int i = 0; i < bonfireCount; i++)
+            {
+                if (worldsave.world_bonfirePositions[i] != Vector3.zero)
+                {
+                    Vector3 screenPosition = mainCamera.WorldToScreenPoint(worldsave.world_bonfirePositions[i]);
+                    if (screenPosition.z > 0.01f && screenPosition.x >= 0.0f && screenPosition.x <= Screen.width - 1 && screenPosition.y >= 0.0f && screenPosition.y <= Screen.height - 1)
+                    {
+                        String labelString = i.ToString();
+                        Vector2 labelSize = guiSkin.label.CalcSize(new GUIContent(labelString));
+
+                        float labelPosX = screenPosition.x - labelSize.x * 0.5f;
+                        float labelPosY = Screen.height - screenPosition.y - labelSize.y * 0.5f;
+
+                        GUI.Label(new Rect(labelPosX, labelPosY, labelSize.x, labelSize.y), labelString);
+                    }
+                }
+            }
+        }
 	}
 
     private void WindowMain(int windowID)
@@ -287,7 +333,6 @@ public class VerhoTool : BaseUnityPlugin
             return;
         }
         
-
 
         // Start GUI
         GUILayout.BeginVertical();
@@ -472,13 +517,30 @@ public class VerhoTool : BaseUnityPlugin
             windowEnabledBonfires = !windowEnabledBonfires;
             windowRectBonfires = windowRectBonfiresDefault;
         }
+        GUILayout.EndHorizontal();
+
+        // Map renderer + WW positions
+        GUILayout.BeginHorizontal();
         if (GUILayout.Button("Map Renderer"))
         {
             windowEnabledMaprender = !windowEnabledMaprender;
             windowRectMaprender = windowRectMaprenderDefault;
         }
+        if (wrongwarpPositionsEnabled == true)
+        {
+            if (GUILayout.Button("WW Positions [On]"))
+            {
+                wrongwarpPositionsEnabled = false;
+            }
+        }
+        else
+        {
+            if (GUILayout.Button("WW Positions [Off]"))
+            {
+                wrongwarpPositionsEnabled = true;
+            }
+        }
         GUILayout.EndHorizontal();
-
 
         // End
         GUILayout.EndVertical();
@@ -857,6 +919,11 @@ public class VerhoTool : BaseUnityPlugin
     private GameObject GetPlayer()
     {
         // GameObject player = GameObject.Find("Player");
+
+        if (freecamEnabled && freecamStoredPlayerObject != null)
+        {
+            return freecamStoredPlayerObject;
+        }
 
         GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
         if (playerObjects.Length < 1)
