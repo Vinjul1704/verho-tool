@@ -401,13 +401,13 @@ public class VerhoTool : BaseUnityPlugin
 
         // EXP
         GUILayout.BeginHorizontal();
-        if (GUILayout.Button("-10000", GUILayout.Width(60)))
+        if (GUILayout.Button("-100k", GUILayout.Width(60)))
         {
-            progress.currentExp -= 10000;
+            progress.currentExp -= 100000;
         }
-        if (GUILayout.Button("-100", GUILayout.Width(45)))
+        if (GUILayout.Button("-1k", GUILayout.Width(45)))
         {
-            progress.currentExp -= 100;
+            progress.currentExp -= 1000;
         }
         if (GUILayout.Button("-1", GUILayout.Width(30)))
         {
@@ -418,13 +418,13 @@ public class VerhoTool : BaseUnityPlugin
         {
             progress.currentExp += 1;
         }
-        if (GUILayout.Button("+100", GUILayout.Width(45)))
+        if (GUILayout.Button("+1k", GUILayout.Width(45)))
         {
-            progress.currentExp += 100;
+            progress.currentExp += 1000;
         }
-        if (GUILayout.Button("+10000", GUILayout.Width(60)))
+        if (GUILayout.Button("+100k", GUILayout.Width(60)))
         {
-            progress.currentExp += 10000;
+            progress.currentExp += 100000;
         }
         GUILayout.EndHorizontal();
 
